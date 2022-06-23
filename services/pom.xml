@@ -10,15 +10,17 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>info.akaki</groupId>
-  <artifactId>services</artifactId>
+  <artifactId>microservices</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <modules>
-    <module>customers</module>
-      <module>utility</module>
+      <module>customer-management</module>
+      <module>service-management</module>
+      <module>service-delivery</module>
+      <module>billing-and-payment</module>
   </modules>
 
-  <name>services</name>
+  <name>microservices</name>
   <url>https://www.akaki.info</url>
 
   <properties>

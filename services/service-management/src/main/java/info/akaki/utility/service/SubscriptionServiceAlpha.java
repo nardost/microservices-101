@@ -59,6 +59,10 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(subscriptionDTO.toSubscription()));
     }
 
+    @Override
+    public void activate(UUID subscriptionId, LocalDateTime activationTime) {
+    }
+
     /**
      * Check if plan exists
      * @param planId the plan id

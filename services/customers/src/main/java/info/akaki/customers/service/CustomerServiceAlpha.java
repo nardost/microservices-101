@@ -1,7 +1,7 @@
 package info.akaki.customers.service;
 
 import info.akaki.customers.dto.CustomerDTO;
-import info.akaki.customers.exception.AkakiServiceException;
+import info.akaki.customers.exception.AkakiCustomersServiceException;
 import info.akaki.customers.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,15 +30,15 @@ public class CustomerServiceAlpha implements CustomerService {
     }
 
     @Override
-    public CustomerDTO getCustomerById(String customerId) {
+    public CustomerDTO getCustomerById(UUID customerId) {
         return new CustomerDTO(this.customerRepository
-                .findById(UUID.fromString(customerId))
-                .orElseThrow(() -> new AkakiServiceException("service.resource-not-found")));
+                .findById(customerId)
+                .orElseThrow(() -> new AkakiCustomersServiceException("service.customer.not-found")));
     }
 
     @Override
     public CustomerDTO saveCustomer(CustomerDTO dto) {
         CustomerDTO.validate(dto);
-        return new CustomerDTO(this.customerRepository.save(dto.toCustomer()));
+        return new CustomerDTO(this.customerRepository.saveAndFlush(dto.toCustomer()));
     }
 }

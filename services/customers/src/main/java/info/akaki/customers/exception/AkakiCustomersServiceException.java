@@ -1,7 +1,7 @@
 package info.akaki.customers.exception;
 
-public class AkakiServiceException extends RuntimeException {
-    public AkakiServiceException(String message) {
+public class AkakiCustomersServiceException extends RuntimeException {
+    public AkakiCustomersServiceException(String message) {
         super(message);
     }
 }

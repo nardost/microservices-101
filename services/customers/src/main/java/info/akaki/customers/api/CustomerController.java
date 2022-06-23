@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Collection;
+import java.util.UUID;
 
 import static info.akaki.customers.utilities.Constants.REGEX_UUID;
 
@@ -40,8 +42,8 @@ public class CustomerController {
     @GetMapping("{customerId}")
     public ResponseEntity<CustomerDTO> getCustomer(
             @PathVariable("customerId")
-            @Pattern(regexp = REGEX_UUID, message = "{validation.uuid.invalid}")
-            String customerId) {
+            @NotNull(message = "{uuid.absent}")
+            UUID customerId) {
         return new ResponseEntity<>(this.customerService.getCustomerById(customerId), HttpStatus.OK);
     }
 

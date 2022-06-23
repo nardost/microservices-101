@@ -7,3 +7,8 @@ spring:
     url: jdbc:postgresql://${MS_101_UTILITY_DB_HOST:localhost}:${MS_101_UTILITY_DB_PORT:5432}/${MS_101_UTILITY_DB_NAME:postgres}
     username: ${MS_101_UTILITY_DB_USER}
     password: ${MS_101_UTILITY_DB_PASS}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

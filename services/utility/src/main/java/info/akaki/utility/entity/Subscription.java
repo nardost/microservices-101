@@ -12,23 +12,23 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "plans")
+@Table(name = "subscriptions")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = { "id" })
-public class Plan {
+public class Subscription {
     @Id
-    @GeneratedValue(generator = "utility_uuid_generator")
-    @GenericGenerator(name = "utility_uuid_generator", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "subscription_uuid_generator")
+    @GenericGenerator(name = "subscription_uuid_generator", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
+    private UUID subscriberId;
+    private UUID planId;
+    private LocalDateTime subscriptionTimestamp;
     @Enumerated(EnumType.STRING)
-    private PlanName planName;
-    private double baseUnits;
-    private double maxUnits;
-    private BigDecimal ratePerUnit;
+    private SubscriptionStatus status;
 }

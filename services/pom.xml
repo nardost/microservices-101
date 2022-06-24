@@ -14,8 +14,7 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <modules>
-      <module>customer-management</module>
-      <module>service-management</module>
+      <module>subscription-management</module>
       <module>service-delivery</module>
       <module>billing-and-payment</module>
   </modules>

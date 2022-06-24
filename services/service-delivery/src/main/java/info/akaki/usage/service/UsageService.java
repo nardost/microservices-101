@@ -1,6 +1,6 @@
-package info.akaki.subscription.service;
+package info.akaki.usage.service;
 
-import info.akaki.subscription.entity.Usage;
+import info.akaki.usage.entity.Usage;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

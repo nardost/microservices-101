@@ -1,7 +1,7 @@
-package info.akaki.subscription.service;
+package info.akaki.usage.service;
 
-import info.akaki.subscription.entity.Usage;
-import info.akaki.subscription.repository.UsageRepository;
+import info.akaki.usage.entity.Usage;
+import info.akaki.usage.repository.UsageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

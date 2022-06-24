@@ -1,4 +1,4 @@
-package info.akaki.subscription.entity;
+package info.akaki.usage.entity;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

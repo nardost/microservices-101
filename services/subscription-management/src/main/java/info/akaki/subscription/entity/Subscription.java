@@ -28,6 +28,7 @@ public class Subscription {
     private UUID id;
     private UUID subscriberId;
     private UUID planId;
+    private UUID deviceId;
     private LocalDateTime subscriptionTimestamp;
     @Enumerated(EnumType.STRING)
     private SubscriptionStatus status;

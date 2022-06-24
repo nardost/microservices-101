@@ -23,6 +23,8 @@ public class SubscriptionDTO {
     private UUID subscriberId;
     @NotNull(message = "{plan-id.absent}")
     private UUID planId;
+    @NotNull(message = "{device-id.absent}")
+    private UUID deviceId;
     private LocalDateTime subscriptionTimestamp;
     private SubscriptionStatus status;
 
@@ -30,6 +32,7 @@ public class SubscriptionDTO {
         this.id = subscription.getId();
         this.subscriberId = subscription.getSubscriberId();
         this.planId = subscription.getPlanId();
+        this.deviceId = subscription.getDeviceId();
         this.subscriptionTimestamp = subscription.getSubscriptionTimestamp();
         this.status = subscription.getStatus();
     }
@@ -39,6 +42,7 @@ public class SubscriptionDTO {
         s.setId(this.id);
         s.setSubscriberId(this.subscriberId);
         s.setPlanId(this.planId);
+        s.setDeviceId(this.deviceId);
         s.setSubscriptionTimestamp(this.subscriptionTimestamp);
         s.setStatus(this.status);
         return s;

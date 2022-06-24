@@ -64,7 +64,8 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     }
 
     @Override
-    public void activate(UUID subscriptionId, LocalDateTime activationTime) {
+    public void scheduleServiceActivation(UUID subscriptionId) {
+        // TODO: Call activation endpoint of service delivery microservice
     }
 
     /**

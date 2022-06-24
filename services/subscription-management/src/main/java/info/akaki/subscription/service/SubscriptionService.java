@@ -10,5 +10,5 @@ public interface SubscriptionService {
     SubscriptionDTO getSubscriptionById(UUID subscriptionId);
     Collection<SubscriptionDTO> getAllSubscriptions();
     SubscriptionDTO saveSubscription(SubscriptionDTO subscriptionDTO);
-    void activate(UUID subscriptionId, LocalDateTime activationTime);
+    void scheduleServiceActivation(UUID subscriptionId);
 }

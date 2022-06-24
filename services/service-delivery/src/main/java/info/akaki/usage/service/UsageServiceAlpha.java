@@ -22,22 +22,12 @@ public class UsageServiceAlpha implements UsageService {
     }
 
     @Override
-    public Collection<Usage> getAllTimeUsagesByAllSubscriptions() {
+    public Collection<Usage> getUsageDataByDeviceId(UUID deviceId, LocalDateTime from, LocalDateTime to) {
         return null;
     }
 
     @Override
-    public Collection<Usage> getAllTimeUsagesBySubscriptionId(UUID subscriptionId) {
-        return null;
-    }
-
-    @Override
-    public Collection<Usage> getUsagesBySubscriptionId(UUID subscriptionId, LocalDateTime from, LocalDateTime to) {
-        return null;
-    }
-
-    @Override
-    public Usage saveUsage(Usage usage) {
+    public Usage saveUsageData(Usage usage) {
         return null;
     }
 }

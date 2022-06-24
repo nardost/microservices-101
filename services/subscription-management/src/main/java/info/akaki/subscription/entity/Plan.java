@@ -7,8 +7,6 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -26,8 +24,7 @@ public class Plan {
     @GeneratedValue(generator = "utility_uuid_generator")
     @GenericGenerator(name = "utility_uuid_generator", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
-    @Enumerated(EnumType.STRING)
-    private PlanName planName;
+    private String planName;
     private double baseUnits;
     private double maxUnits;
     private BigDecimal ratePerUnit;

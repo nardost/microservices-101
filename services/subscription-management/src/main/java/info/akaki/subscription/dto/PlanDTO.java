@@ -1,7 +1,6 @@
 package info.akaki.subscription.dto;
 
 import info.akaki.subscription.entity.Plan;
-import info.akaki.subscription.entity.PlanName;
 import info.akaki.subscription.exception.AkakiUtilityException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,7 +25,7 @@ import static java.lang.Boolean.FALSE;
 public class PlanDTO {
     private UUID id;
     @NotNull(message = "{plan-name.absent}")
-    private PlanName planName;
+    private String planName;
     @NotNull(message = "{base-units.absent}")
     @Positive(message = "{units.negative}")
     private double baseUnits;

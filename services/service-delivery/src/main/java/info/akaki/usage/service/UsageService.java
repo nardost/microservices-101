@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.UUID;
 
 public interface UsageService {
-    Collection<Usage> getAllTimeUsagesByAllSubscriptions();
-    Collection<Usage> getAllTimeUsagesBySubscriptionId(UUID subscriptionId);
-    Collection<Usage> getUsagesBySubscriptionId(UUID subscriptionId, LocalDateTime from, LocalDateTime to);
-    Usage saveUsage(Usage usage);
+    Collection<Usage> getUsageDataByDeviceId(UUID deviceId, LocalDateTime from, LocalDateTime to);
+    Usage saveUsageData(Usage usage);
 }

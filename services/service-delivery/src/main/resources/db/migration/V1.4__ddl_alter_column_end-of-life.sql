@@ -1,0 +1,1 @@
+alter table devices alter column end_of_life type timestamp;

@@ -31,6 +31,8 @@ public class Device {
     private UUID deviceId;
     @Enumerated(EnumType.STRING)
     private DeviceState deviceState;
+    @Enumerated(EnumType.STRING)
+    private DeviceSource deviceSource;
     private LocalDateTime endOfLife;
     @ElementCollection(targetClass = ServiceType.class)
     @Column(name = "service_type", nullable = false)

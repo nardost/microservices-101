@@ -1,0 +1,1 @@
+alter table devices add column device_source varchar(5)  default 'LEASE' not null;

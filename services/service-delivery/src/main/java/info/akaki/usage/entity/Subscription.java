@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "services")
+@Table(name = "subscriptions")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = { "subscriptionId" })
-public class Service {
+public class Subscription {
     @Id
     private UUID subscriptionId;
     @ManyToOne(cascade = CascadeType.ALL)

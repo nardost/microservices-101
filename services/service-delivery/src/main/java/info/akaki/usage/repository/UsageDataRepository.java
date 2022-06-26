@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public interface UsageRepository extends JpaRepository<UsageData, Long> {
+public interface UsageDataRepository extends JpaRepository<UsageData, Long> {
     @Query("select u from UsageData u where u.deviceId = :deviceId and u.captureTimestamp between :from and :to")
     List<UsageData> getUsageData(
             @Param("deviceId") UUID deviceId,

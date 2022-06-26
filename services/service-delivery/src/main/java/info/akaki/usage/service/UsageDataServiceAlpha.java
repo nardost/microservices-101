@@ -1,7 +1,7 @@
 package info.akaki.usage.service;
 
 import info.akaki.usage.entity.UsageData;
-import info.akaki.usage.repository.UsageRepository;
+import info.akaki.usage.repository.UsageDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +12,12 @@ import java.util.UUID;
 
 @Service(value = "usageServiceAlpha")
 @Transactional
-public class UsageServiceAlpha implements UsageService {
+public class UsageDataServiceAlpha implements UsageDataService {
 
-    private final UsageRepository usageRepository;
+    private final UsageDataRepository usageRepository;
 
     @Autowired
-    public UsageServiceAlpha(UsageRepository usageRepository) {
+    public UsageDataServiceAlpha(UsageDataRepository usageRepository) {
         this.usageRepository = usageRepository;
     }
 

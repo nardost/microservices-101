@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = { "id" })
-public class UsageDTO {
+public class UsageDataDTO {
     private long id;
     private UUID deviceId;
     private LocalDateTime captureTimestamp;

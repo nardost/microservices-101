@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
-public interface UsageService {
+public interface UsageDataService {
     Collection<UsageData> getUsageDataByDeviceId(UUID deviceId, LocalDateTime from, LocalDateTime to);
     UsageData saveUsageData(UsageData usage);
 }

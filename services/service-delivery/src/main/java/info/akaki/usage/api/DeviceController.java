@@ -37,14 +37,9 @@ public class DeviceController {
         return new ResponseEntity<>(this.deviceService.getDevices(), HttpStatus.OK);
     }
 
-    @GetMapping("{deviceId}/service-types")
-    public ResponseEntity<Collection<String>> getDeviceServiceTypes(@PathVariable("deviceId") UUID deviceId) {
-        return new ResponseEntity<>(this.deviceService
-                .getDeviceByDeviceId(deviceId)
-                .getServiceTypes()
-                .stream()
-                .map(ServiceType::toString)
-                .collect(Collectors.toList()), HttpStatus.OK);
+    @GetMapping("{deviceId}")
+    public ResponseEntity<DeviceDTO> getDevice(@PathVariable("deviceId") UUID deviceId) {
+        return new ResponseEntity<>(this.deviceService.getDeviceByDeviceId(deviceId), HttpStatus.OK);
     }
 
     @PatchMapping("")

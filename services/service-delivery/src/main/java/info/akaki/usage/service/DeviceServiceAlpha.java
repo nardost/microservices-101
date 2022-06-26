@@ -2,6 +2,7 @@ package info.akaki.usage.service;
 
 import info.akaki.usage.dto.DeviceDTO;
 import info.akaki.usage.entity.Device;
+import info.akaki.usage.entity.ServiceType;
 import info.akaki.usage.exception.ServiceDeliveryException;
 import info.akaki.usage.repository.DeviceRepository;
 import info.akaki.usage.utilities.DevicesFileProcessor;
@@ -45,6 +46,11 @@ public class DeviceServiceAlpha implements DeviceService {
         return new DeviceDTO(this.deviceRepository
                 .findById(deviceId)
                 .orElseThrow(() -> new ServiceDeliveryException("device.not-found")));
+    }
+
+    @Override
+    public DeviceDTO getDeviceForServiceType(ServiceType serviceType) {
+        return new DeviceDTO(this.deviceRepository.findFirstByServiceTypesContaining(serviceType));
     }
 
     @Override

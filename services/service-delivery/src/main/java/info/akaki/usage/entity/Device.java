@@ -38,5 +38,5 @@ public class Device {
     @Column(name = "service_type", nullable = false)
     @CollectionTable(name = "device_service_types", joinColumns = @JoinColumn(name = "device_id"))
     @Enumerated(EnumType.STRING)
-    public Collection<ServiceType> serviceTypes;
+    private Collection<ServiceType> serviceTypes;
 }

@@ -1,6 +1,7 @@
 package info.akaki.usage.dto;
 
 import info.akaki.usage.entity.Device;
+import info.akaki.usage.entity.DeviceSource;
 import info.akaki.usage.entity.DeviceState;
 import info.akaki.usage.entity.ServiceType;
 import lombok.EqualsAndHashCode;
@@ -23,12 +24,14 @@ import java.util.stream.Collectors;
 public class DeviceDTO {
     private UUID deviceId;
     private DeviceState deviceState;
+    private DeviceSource deviceSource;
     private LocalDateTime endOfLife;
     private Collection<ServiceType> serviceTypes;
 
     public DeviceDTO(Device device) {
         this.deviceId = device.getDeviceId();
         this.deviceState = device.getDeviceState();
+        this.deviceSource = device.getDeviceSource();
         this.endOfLife = device.getEndOfLife();
         this.serviceTypes = device.getServiceTypes();
     }
@@ -37,6 +40,7 @@ public class DeviceDTO {
         Device d = new Device();
         d.setDeviceId(this.deviceId);
         d.setDeviceState(this.deviceState);
+        d.setDeviceSource(this.deviceSource);
         d.setEndOfLife(this.endOfLife);
         d.setServiceTypes(new HashSet<>(this.serviceTypes));
         return d;

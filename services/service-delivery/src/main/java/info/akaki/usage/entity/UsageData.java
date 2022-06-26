@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = { "id" })
-public class Usage {
+public class UsageData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

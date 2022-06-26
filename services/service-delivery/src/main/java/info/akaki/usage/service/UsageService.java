@@ -1,12 +1,12 @@
 package info.akaki.usage.service;
 
-import info.akaki.usage.entity.Usage;
+import info.akaki.usage.entity.UsageData;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
 public interface UsageService {
-    Collection<Usage> getUsageDataByDeviceId(UUID deviceId, LocalDateTime from, LocalDateTime to);
-    Usage saveUsageData(Usage usage);
+    Collection<UsageData> getUsageDataByDeviceId(UUID deviceId, LocalDateTime from, LocalDateTime to);
+    UsageData saveUsageData(UsageData usage);
 }

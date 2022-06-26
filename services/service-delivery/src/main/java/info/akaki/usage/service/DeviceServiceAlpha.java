@@ -2,17 +2,17 @@ package info.akaki.usage.service;
 
 import info.akaki.usage.dto.DeviceDTO;
 import info.akaki.usage.entity.Device;
-import info.akaki.usage.exception.AkakiServiceDeliveryException;
+import info.akaki.usage.exception.ServiceDeliveryException;
 import info.akaki.usage.repository.DeviceRepository;
 import info.akaki.usage.utilities.DevicesFileProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
@@ -44,17 +44,20 @@ public class DeviceServiceAlpha implements DeviceService {
     public DeviceDTO getDeviceByDeviceId(UUID deviceId) {
         return new DeviceDTO(this.deviceRepository
                 .findById(deviceId)
-                .orElseThrow(() -> new AkakiServiceDeliveryException("device.not-found")));
+                .orElseThrow(() -> new ServiceDeliveryException("device.not-found")));
     }
 
     @Override
     public DeviceDTO updateDevice(DeviceDTO deviceDTO) {
         DeviceDTO.validate(deviceDTO);
-        throw new AkakiServiceDeliveryException("service.method-not-implemented");
-        // return new DeviceDTO(this.deviceRepository.saveAndFlush(deviceDTO.toDevice()));
+        throw new ServiceDeliveryException("service.method-not-implemented");
+        // todo:
+        //  - if device exists, do update
+        //  - 404 if device does not exist
     }
 
     @Override
+    @Async
     public void bulkSaveDevices(MultipartFile devicesFile) {
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(devicesFile.getInputStream()))) {
             final Collection<Device> devices = reader
@@ -67,7 +70,7 @@ public class DeviceServiceAlpha implements DeviceService {
                     .collect(Collectors.toSet());
             this.deviceRepository.saveAll(devices);
         } catch (IOException ioe) {
-            throw new AkakiServiceDeliveryException("service.io-error");
+            throw new ServiceDeliveryException("service.io-exception");
         }
     }
 }

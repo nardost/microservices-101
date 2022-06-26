@@ -18,7 +18,7 @@ public class ServiceController {
     @GetMapping("")
     public ResponseEntity<Collection<String>> getAllServiceCategories() {
         return new ResponseEntity<>(
-                Arrays.stream(ServiceType.values()).map(ServiceType::toString).collect(Collectors.toList()),
+                Arrays.stream(ServiceType.values()).map(ServiceType::toString).collect(Collectors.toSet()),
                 HttpStatus.OK
         );
     }

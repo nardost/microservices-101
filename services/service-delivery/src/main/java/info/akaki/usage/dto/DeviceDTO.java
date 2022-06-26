@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class DeviceDTO {
     private UUID deviceId;
     private DeviceState deviceState;
+    @NotNull(message = "{device-source.absent}")
     private DeviceSource deviceSource;
     private LocalDateTime endOfLife;
     private Collection<ServiceType> serviceTypes;

@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,7 +28,9 @@ public class Subscription {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "device_id")
     private Device device;
+    @Enumerated(EnumType.STRING)
     private ServiceType serviceType;
-    private LocalDateTime activationTimestamp;
+    private LocalDateTime subscriptionTimestamp;
+    @Enumerated(EnumType.STRING)
     private ServiceStatus serviceStatus;
 }

@@ -1,7 +1,6 @@
 package info.akaki.usage.api;
 
 import info.akaki.usage.dto.DeviceDTO;
-import info.akaki.usage.entity.ServiceType;
 import info.akaki.usage.service.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = DeviceController.DEVICES_API_URL)

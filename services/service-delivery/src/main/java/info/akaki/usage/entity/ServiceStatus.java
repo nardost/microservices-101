@@ -1,7 +1,7 @@
 package info.akaki.usage.entity;
 
 public enum ServiceStatus {
-    SCHEDULED,
+    CREATED,
     RUNNING,
     SUSPENDED,
     TERMINATED

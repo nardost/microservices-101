@@ -1,6 +1,6 @@
 package info.akaki.usage.entity;
 
 public enum DeviceSource {
-    OWNED,
+    OWN,
     LEASE
 }

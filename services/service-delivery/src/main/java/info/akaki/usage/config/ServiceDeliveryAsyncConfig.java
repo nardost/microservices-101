@@ -13,10 +13,12 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class ServiceDeliveryAsyncConfig implements AsyncConfigurer {
 
+    private static final int THREAD_POOL_SIZE = 10;
+
     @Override
     public Executor getAsyncExecutor() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(10);
+        final ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(THREAD_POOL_SIZE);
         scheduler.initialize();
         return scheduler;
     }

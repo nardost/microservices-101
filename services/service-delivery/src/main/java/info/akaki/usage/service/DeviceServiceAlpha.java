@@ -2,6 +2,7 @@ package info.akaki.usage.service;
 
 import info.akaki.usage.dto.DeviceDTO;
 import info.akaki.usage.entity.Device;
+import info.akaki.usage.entity.DeviceState;
 import info.akaki.usage.entity.ServiceType;
 import info.akaki.usage.exception.ServiceDeliveryException;
 import info.akaki.usage.repository.DeviceRepository;
@@ -50,7 +51,8 @@ public class DeviceServiceAlpha implements DeviceService {
 
     @Override
     public DeviceDTO getDeviceForServiceType(ServiceType serviceType) {
-        return new DeviceDTO(this.deviceRepository.findFirstByServiceTypesContaining(serviceType));
+        return new DeviceDTO(this.deviceRepository
+                .findFirstByServiceTypesContainingAndDeviceStateEquals(serviceType, DeviceState.IDLE));
     }
 
     @Override

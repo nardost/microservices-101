@@ -1,5 +1,6 @@
 package info.akaki.subscription.service;
 
+import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
 import info.akaki.subscription.entity.SubscriptionStatus;
 import info.akaki.subscription.exception.AkakiUtilityException;
@@ -66,6 +67,12 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(subscriptionDTO.toSubscription()));
     }
 
+    @Override
+    public void changeSubscriptionStatus(ActionDTO actionDTO) {
+        requestServiceStatusChange(actionDTO);
+        log.info("{}", actionDTO);
+    }
+
     /**
      * TODO:
      *  - send subscription request to service-delivery microservice
@@ -75,9 +82,14 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         log.info("Subscription request sent to service-delivery microservice");
     }
 
-    @Override
-    public void scheduleServiceActivation(UUID subscriptionId) {
-        // TODO: Call activation endpoint of service delivery microservice
+    /**
+     * TODO:
+     *  - send activation request to service-delivery microservice
+     *
+     * @param actionDTO subscription id
+     */
+    private void requestServiceStatusChange(ActionDTO actionDTO) {
+        log.info("Service activation will be requested for subscription id");
     }
 
     /**

@@ -1,6 +1,8 @@
 package info.akaki.subscription.api;
 
+import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
+import info.akaki.subscription.entity.SubscriptionStatus;
 import info.akaki.subscription.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,5 +46,11 @@ public class SubscriptionController {
     @PostMapping("")
     public ResponseEntity<SubscriptionDTO> subscribe(@Valid @RequestBody SubscriptionDTO subscriptionDTO) {
         return new ResponseEntity<>(this.subscriptionService.subscribe(subscriptionDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("change-service-status")
+    public ResponseEntity<Void> changeServiceStatus(@Valid @RequestBody ActionDTO actionDTO) {
+        this.subscriptionService.changeSubscriptionStatus(actionDTO);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

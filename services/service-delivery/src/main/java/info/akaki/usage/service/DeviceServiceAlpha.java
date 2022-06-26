@@ -1,18 +1,28 @@
 package info.akaki.usage.service;
 
 import info.akaki.usage.dto.DeviceDTO;
+import info.akaki.usage.entity.Device;
 import info.akaki.usage.exception.AkakiServiceDeliveryException;
 import info.akaki.usage.repository.DeviceRepository;
+import info.akaki.usage.utilities.DevicesFileProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service(value = "deviceServiceAlpha")
 @Transactional
+@Slf4j
 public class DeviceServiceAlpha implements DeviceService {
 
     private final DeviceRepository deviceRepository;
@@ -38,8 +48,26 @@ public class DeviceServiceAlpha implements DeviceService {
     }
 
     @Override
-    public DeviceDTO saveDevice(DeviceDTO deviceDTO) {
+    public DeviceDTO updateDevice(DeviceDTO deviceDTO) {
         DeviceDTO.validate(deviceDTO);
-        return new DeviceDTO(this.deviceRepository.saveAndFlush(deviceDTO.toDevice()));
+        throw new AkakiServiceDeliveryException("service.method-not-implemented");
+        // return new DeviceDTO(this.deviceRepository.saveAndFlush(deviceDTO.toDevice()));
+    }
+
+    @Override
+    public void bulkSaveDevices(MultipartFile devicesFile) {
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(devicesFile.getInputStream()))) {
+            final Collection<Device> devices = reader
+                    .lines()
+                    .filter(DevicesFileProcessor::isValidDeviceDataLine)
+                    .map(DevicesFileProcessor::toDeviceDTO)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(DeviceDTO::toDevice)
+                    .collect(Collectors.toSet());
+            this.deviceRepository.saveAll(devices);
+        } catch (IOException ioe) {
+            throw new AkakiServiceDeliveryException("service.io-error");
+        }
     }
 }

@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -44,8 +47,14 @@ public class DeviceController {
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
 
+    @PatchMapping("")
+    public ResponseEntity<DeviceDTO> updateDevice(@RequestBody DeviceDTO deviceDTO) {
+        return new ResponseEntity<>(this.deviceService.updateDevice(deviceDTO), HttpStatus.CREATED);
+    }
+
     @PostMapping("")
-    public ResponseEntity<DeviceDTO> saveDevice(@RequestBody DeviceDTO deviceDTO) {
-        return new ResponseEntity<>(this.deviceService.saveDevice(deviceDTO), HttpStatus.CREATED);
+    public ResponseEntity<Void> saveDevices(@RequestParam("devices-file") MultipartFile devicesFile) {
+        this.deviceService.bulkSaveDevices(devicesFile);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

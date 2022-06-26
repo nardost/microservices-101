@@ -42,6 +42,7 @@ public class DeviceDTO {
         return d;
     }
 
+    // TODO: write dto validation logic
     public static void validate(DeviceDTO deviceDTO) {
     }
 }

@@ -25,11 +25,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(of = { "id" })
+@EqualsAndHashCode(of = { "deviceId" })
 public class Device {
     @Id
-    @GeneratedValue(generator = "device_uuid_generator")
-    @GenericGenerator(name = "device_uuid_generator", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID deviceId;
     @Enumerated(EnumType.STRING)
     private DeviceState deviceState;

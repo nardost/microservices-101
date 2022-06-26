@@ -14,8 +14,8 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-//@Entity
-//@Table(name = "services")
+@Entity
+@Table(name = "services")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,0 +1,1 @@
+alter table plans rename column plan_name to service_type;

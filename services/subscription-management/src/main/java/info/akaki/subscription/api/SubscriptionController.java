@@ -42,7 +42,7 @@ public class SubscriptionController {
     }
 
     @PostMapping("")
-    public ResponseEntity<SubscriptionDTO> createSubscription(@Valid @RequestBody SubscriptionDTO subscriptionDTO) {
-        return new ResponseEntity<>(this.subscriptionService.saveSubscription(subscriptionDTO), HttpStatus.CREATED);
+    public ResponseEntity<SubscriptionDTO> subscribe(@Valid @RequestBody SubscriptionDTO subscriptionDTO) {
+        return new ResponseEntity<>(this.subscriptionService.subscribe(subscriptionDTO), HttpStatus.CREATED);
     }
 }

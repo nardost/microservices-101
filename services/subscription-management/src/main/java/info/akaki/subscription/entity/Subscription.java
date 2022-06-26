@@ -27,7 +27,7 @@ public class Subscription {
     @GenericGenerator(name = "subscription_uuid_generator", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
     private UUID subscriberId;
-    private UUID planId;
+    private String subscriptionType;
     private UUID deviceId;
     @Enumerated(EnumType.STRING)
     private DeviceSource deviceSource;

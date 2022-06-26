@@ -6,6 +6,7 @@ import info.akaki.subscription.exception.AkakiUtilityException;
 import info.akaki.subscription.repository.CustomerRepository;
 import info.akaki.subscription.repository.PlanRepository;
 import info.akaki.subscription.repository.SubscriptionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import static java.lang.Boolean.FALSE;
 
 @Service(value = "subscriptionServiceAlpha")
 @Transactional
+@Slf4j
 public class SubscriptionServiceAlpha implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final PlanRepository planRepository;
@@ -50,17 +52,27 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     }
 
     @Override
-    public SubscriptionDTO saveSubscription(SubscriptionDTO subscriptionDTO) {
+    public SubscriptionDTO subscribe(SubscriptionDTO subscriptionDTO) {
         SubscriptionDTO.validate(subscriptionDTO);
-        if(FALSE.equals(planExists(subscriptionDTO.getPlanId()))) {
+        if(FALSE.equals(planExists(subscriptionDTO.getSubscriptionType()))) {
             throw new AkakiUtilityException("plan.not-found");
         }
         if(FALSE.equals(subscriberExists(subscriptionDTO.getSubscriberId()))) {
             throw new AkakiUtilityException("subscriber.not-found");
         }
         subscriptionDTO.setSubscriptionTimestamp(LocalDateTime.now());
-        subscriptionDTO.setStatus(SubscriptionStatus.PENDING);
+        subscriptionDTO.setSubscriptionStatus(SubscriptionStatus.PENDING);
+        requestSubscription(subscriptionDTO);
         return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(subscriptionDTO.toSubscription()));
+    }
+
+    /**
+     * TODO:
+     *  - send subscription request to service-delivery microservice
+     *  - should return device info if subscriber is leasing device.
+     */
+    private void requestSubscription(SubscriptionDTO subscriptionDTO) {
+        log.info("Subscription request sent to service-delivery microservice");
     }
 
     @Override
@@ -70,11 +82,11 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
 
     /**
      * Check if plan exists
-     * @param planId the plan id
+     * @param subscriptionType the plan id
      * @return true if plan exists; false otherwise
      */
-    private Boolean planExists(UUID planId) {
-        return this.planRepository.existsById(planId);
+    private Boolean planExists(String subscriptionType) {
+        return this.planRepository.existsByServiceType(subscriptionType);
     }
 
     /**

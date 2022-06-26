@@ -38,7 +38,7 @@ public class PlanDTO {
 
     public PlanDTO(Plan plan) {
         this.id = plan.getId();
-        this.planName = plan.getPlanName();
+        this.planName = plan.getServiceType();
         this.baseUnits = plan.getBaseUnits();
         this.maxUnits = plan.getMaxUnits();
         this.ratePerUnit = plan.getRatePerUnit();
@@ -47,7 +47,7 @@ public class PlanDTO {
     public Plan toPlan() {
         Plan p = new Plan();
         p.setId(this.id);
-        p.setPlanName(this.planName);
+        p.setServiceType(this.planName);
         p.setBaseUnits(this.baseUnits);
         p.setMaxUnits(this.maxUnits);
         p.setRatePerUnit(this.ratePerUnit);

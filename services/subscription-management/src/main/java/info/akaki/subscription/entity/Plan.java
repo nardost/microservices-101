@@ -24,7 +24,7 @@ public class Plan {
     @GeneratedValue(generator = "utility_uuid_generator")
     @GenericGenerator(name = "utility_uuid_generator", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
-    private String planName;
+    private String serviceType;
     private double baseUnits;
     private double maxUnits;
     private BigDecimal ratePerUnit;

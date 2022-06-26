@@ -1,6 +1,6 @@
 package info.akaki.subscription.entity;
 
-public enum State {
+public enum USState {
 
     AL("Alabama"),
     AK("Alaska"),
@@ -56,7 +56,7 @@ public enum State {
 
     private final String name;
 
-    State(String name) {
+    USState(String name) {
         this.name = name;
     }
 }

@@ -1,0 +1,1 @@
+alter table subscriptions add column device_source varchar(5) not null;

@@ -1,7 +1,7 @@
 package info.akaki.subscription.dto;
 
 import info.akaki.subscription.entity.Address;
-import info.akaki.subscription.entity.State;
+import info.akaki.subscription.entity.USState;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,14 +30,14 @@ public class AddressDTO {
     private String city;
     @Pattern(regexp = REGEX_ZIP_CODE, message = "validation.zip-code.invalid")
     private String zipCode;
-    private State state;
+    private USState USState;
 
     public AddressDTO(Address address) {
         this.id = address.getId().toString();
         this.street = address.getStreet();
         this.city = address.getCity();
         this.zipCode = address.getZipCode();
-        this.state = address.getState();
+        this.USState = address.getUSState();
     }
 
     public Address toAddress() {
@@ -46,7 +46,7 @@ public class AddressDTO {
         a.setStreet(this.street);
         a.setCity(this.city);
         a.setZipCode(this.zipCode);
-        a.setState(this.state);
+        a.setUSState(this.USState);
         return a;
     }
 }

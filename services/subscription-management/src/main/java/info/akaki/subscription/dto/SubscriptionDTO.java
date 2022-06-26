@@ -34,7 +34,7 @@ public class SubscriptionDTO {
         this.planId = subscription.getPlanId();
         this.deviceId = subscription.getDeviceId();
         this.subscriptionTimestamp = subscription.getSubscriptionTimestamp();
-        this.status = subscription.getStatus();
+        this.status = subscription.getSubscriptionStatus();
     }
 
     public Subscription toSubscription() {
@@ -44,7 +44,7 @@ public class SubscriptionDTO {
         s.setPlanId(this.planId);
         s.setDeviceId(this.deviceId);
         s.setSubscriptionTimestamp(this.subscriptionTimestamp);
-        s.setStatus(this.status);
+        s.setSubscriptionStatus(this.status);
         return s;
     }
 

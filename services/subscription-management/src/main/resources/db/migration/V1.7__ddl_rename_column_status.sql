@@ -1,0 +1,1 @@
+alter table subscriptions rename status to subscription_status;

@@ -2,7 +2,7 @@ package info.akaki.subscription.entity;
 
 public enum DeviceSource {
     // Bring Your Own Device
-    BYOD,
+    OWN,
     // Lease from service provider
     LEASE
 }

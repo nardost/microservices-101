@@ -17,4 +17,6 @@ public final class Constants {
     public static final int MAX_LENGTH_PHONE_NUMBER = 15;
     public static final int MAX_LENGTH_CITY = 20;
     public static final int MAX_LENGTH_STREET_ADDRESS = 255;
+
+    public static final String SERVICE_DELIVERY_MICROSERVICE_HOST_URL = "http://127.0.0.1:8082";
 }

@@ -4,11 +4,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,6 +26,8 @@ import java.util.UUID;
 @EqualsAndHashCode(of = { "subscriptionId" })
 public class Subscription {
     @Id
+    @GeneratedValue(generator = "subscription_uuid_generator")
+    @GenericGenerator(name = "subscription_uuid_generator", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID subscriptionId;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "device_id")

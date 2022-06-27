@@ -2,6 +2,7 @@ package info.akaki.subscription.service;
 
 import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
+import info.akaki.subscription.entity.Subscription;
 import info.akaki.subscription.entity.SubscriptionStatus;
 import info.akaki.subscription.exception.SubscriptionManagementException;
 import info.akaki.subscription.repository.CustomerRepository;
@@ -10,6 +11,7 @@ import info.akaki.subscription.repository.SubscriptionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -17,6 +19,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static info.akaki.subscription.utilities.Constants.SERVICE_DELIVERY_MICROSERVICE_HOST_URL;
 import static java.lang.Boolean.FALSE;
 
 @Service(value = "subscriptionServiceAlpha")
@@ -26,15 +29,18 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final PlanRepository planRepository;
     private final CustomerRepository customerRepository;
+    private final RestTemplate restTemplate;
 
     @Autowired
     public SubscriptionServiceAlpha(
             SubscriptionRepository subscriptionRepository,
             PlanRepository planRepository,
-            CustomerRepository customerRepository) {
+            CustomerRepository customerRepository,
+            RestTemplate restTemplate) {
         this.subscriptionRepository = subscriptionRepository;
         this.planRepository = planRepository;
         this.customerRepository = customerRepository;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -53,18 +59,17 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     }
 
     @Override
-    public SubscriptionDTO subscribe(SubscriptionDTO subscriptionDTO) {
-        SubscriptionDTO.validate(subscriptionDTO);
-        if(FALSE.equals(planExists(subscriptionDTO.getSubscriptionType()))) {
+    public SubscriptionDTO subscribe(SubscriptionDTO dto) {
+        SubscriptionDTO.validate(dto);
+        if(FALSE.equals(planExists(dto.getServiceType()))) {
             throw new SubscriptionManagementException("plan.not-found");
         }
-        if(FALSE.equals(subscriberExists(subscriptionDTO.getSubscriberId()))) {
+        if(FALSE.equals(subscriberExists(dto.getSubscriberId()))) {
             throw new SubscriptionManagementException("subscriber.not-found");
         }
-        subscriptionDTO.setSubscriptionTimestamp(LocalDateTime.now());
-        subscriptionDTO.setSubscriptionStatus(SubscriptionStatus.PENDING);
-        requestSubscription(subscriptionDTO);
-        return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(subscriptionDTO.toSubscription()));
+        final Subscription subscription = requestSubscription(dto).toSubscription();
+        subscription.setSubscriberId(dto.getSubscriberId());
+        return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(subscription));
     }
 
     @Override
@@ -78,8 +83,15 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
      *  - send subscription request to service-delivery microservice
      *  - should return device info if subscriber is leasing device.
      */
-    private void requestSubscription(SubscriptionDTO subscriptionDTO) {
+    private SubscriptionDTO requestSubscription(SubscriptionDTO subscriptionDTO) {
         log.info("Subscription request sent to service-delivery microservice");
+        SubscriptionDTO response = this.restTemplate.postForObject(
+                SERVICE_DELIVERY_MICROSERVICE_HOST_URL + "/api/v1/subscriptions",
+                subscriptionDTO,
+                SubscriptionDTO.class
+        );
+        log.info("{}", response);
+        return response;
     }
 
     /**

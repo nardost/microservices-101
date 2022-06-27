@@ -81,4 +81,12 @@ public class DeviceServiceAlpha implements DeviceService {
             throw new ServiceDeliveryException("service.io-exception");
         }
     }
+
+    @Override
+    public void changeDeviceState(UUID deviceId, DeviceState deviceState) {
+        final Device device = this.deviceRepository
+                .findById(deviceId)
+                .orElseThrow(() -> new ServiceDeliveryException("service.device-not-found"));
+        device.setDeviceState(deviceState);
+    }
 }

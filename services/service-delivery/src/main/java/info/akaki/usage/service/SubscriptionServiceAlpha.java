@@ -2,11 +2,14 @@ package info.akaki.usage.service;
 
 import info.akaki.usage.dto.DeviceDTO;
 import info.akaki.usage.dto.SubscriptionDTO;
+import info.akaki.usage.entity.Device;
 import info.akaki.usage.entity.DeviceSource;
 import info.akaki.usage.entity.DeviceState;
 import info.akaki.usage.entity.ServiceStatus;
 import info.akaki.usage.entity.ServiceType;
+import info.akaki.usage.entity.Subscription;
 import info.akaki.usage.exception.ServiceDeliveryException;
+import info.akaki.usage.repository.DeviceRepository;
 import info.akaki.usage.repository.SubscriptionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,37 +29,33 @@ import java.util.stream.Collectors;
 public class SubscriptionServiceAlpha implements SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
-    private final DeviceService deviceService;
+    private final DeviceRepository deviceRepository;
 
     @Autowired
     public SubscriptionServiceAlpha(
             SubscriptionRepository subscriptionRepository,
-            DeviceService deviceService) {
+            DeviceRepository deviceRepository) {
         this.subscriptionRepository = subscriptionRepository;
-        this.deviceService = deviceService;
+        this.deviceRepository = deviceRepository;
     }
 
     @Override
     public SubscriptionDTO createSubscription(SubscriptionDTO dto) {
         SubscriptionDTO.validate(dto);
-        if(this.subscriptionRepository.existsById(dto.getSubscriptionId())) {
-            throw new ServiceDeliveryException("service.subscription-exists");
-        }
-        if(dto.getDevice().getDeviceSource() == DeviceSource.OWN) {
-            // if device is BYOD, create a new Device object (simulate querying manufacturer db to get metadata)
-            final DeviceDTO ownDevice = queryManufacturerDB(dto.getDevice().getDeviceId());
-            ownDevice.setDeviceSource(DeviceSource.OWN);
-            dto.setDevice(ownDevice);
 
-        } else {
-            // if device is leased, get a device from db
-            final DeviceDTO leasedDevice = this.deviceService.getDeviceForServiceType(dto.getServiceType());
-            dto.setDevice(leasedDevice);
+        final Subscription subscription = dto.toSubscription();
+        Device device = this.deviceRepository.findFirstByServiceTypesContainingAndDeviceStateEquals(dto.getServiceType(), DeviceState.IDLE);
+        if(subscription.getDevice().getDeviceSource() == DeviceSource.OWN) {
+            // if device is BYOD, create a new Device object (simulate querying manufacturer db to get metadata)
+            device = queryManufacturerDB(subscription.getDevice().getDeviceId())
+                    .orElseThrow(() -> new ServiceDeliveryException("service.device-not-recognized"));
+            device.setDeviceSource(DeviceSource.OWN);
         }
-        dto.getDevice().setDeviceState(DeviceState.ACTIVE);
-        dto.setServiceStatus(ServiceStatus.CREATED);
-        dto.setSubscriptionTimestamp(LocalDateTime.now());
-        return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(dto.toSubscription()));
+        device.setDeviceState(DeviceState.ACTIVE);
+        subscription.setDevice(device);
+        subscription.setServiceStatus(ServiceStatus.CREATED);
+        subscription.setSubscriptionTimestamp(LocalDateTime.now());
+        return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(subscription));
     }
 
     /**
@@ -62,11 +63,14 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
      * @param deviceId device id
      * @return Device meta data
      */
-    private DeviceDTO queryManufacturerDB(UUID deviceId) {
-        DeviceDTO dto = new DeviceDTO();
-        dto.setDeviceId(deviceId);
-        dto.setEndOfLife(LocalDateTime.now().plusYears(5));
-        dto.setServiceTypes(Arrays.stream(ServiceType.values()).collect(Collectors.toSet()));
-        return dto;
+    private Optional<Device> queryManufacturerDB(UUID deviceId) {
+        if(Objects.isNull(deviceId)) {
+            return Optional.empty();
+        }
+        Device device = new Device();
+        device.setDeviceId(deviceId);
+        device.setEndOfLife(LocalDateTime.now().plusYears(5));
+        device.setServiceTypes(Arrays.stream(ServiceType.values()).collect(Collectors.toSet()));
+        return Optional.of(device);
     }
 }

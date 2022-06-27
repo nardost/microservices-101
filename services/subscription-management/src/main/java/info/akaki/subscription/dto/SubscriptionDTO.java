@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -18,12 +19,13 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = "{ id }")
+@ToString
 public class SubscriptionDTO {
-    private UUID id;
+    private UUID subscriptionId;
     @NotNull(message = "{subscription.subscriber-id.absent}")
     private UUID subscriberId;
     @NotNull(message = "{subscription.subscription-type.absent}")
-    private String subscriptionType;
+    private String serviceType;
     private UUID deviceId;
     @NotNull(message = "{subscription.device-source.absent}")
     private DeviceSource deviceSource;
@@ -31,9 +33,9 @@ public class SubscriptionDTO {
     private SubscriptionStatus subscriptionStatus;
 
     public SubscriptionDTO(Subscription subscription) {
-        this.id = subscription.getId();
+        this.subscriptionId = subscription.getId();
         this.subscriberId = subscription.getSubscriberId();
-        this.subscriptionType = subscription.getSubscriptionType();
+        this.serviceType = subscription.getSubscriptionType();
         this.deviceId = subscription.getDeviceId();
         this.deviceSource = subscription.getDeviceSource();
         this.subscriptionTimestamp = subscription.getSubscriptionTimestamp();
@@ -42,9 +44,9 @@ public class SubscriptionDTO {
 
     public Subscription toSubscription() {
         Subscription s = new Subscription();
-        s.setId(this.id);
+        s.setId(this.subscriptionId);
         s.setSubscriberId(this.subscriberId);
-        s.setSubscriptionType(this.subscriptionType);
+        s.setSubscriptionType(this.serviceType);
         s.setDeviceId(this.deviceId);
         s.setDeviceSource(this.deviceSource);
         s.setSubscriptionTimestamp(this.subscriptionTimestamp);
@@ -56,7 +58,7 @@ public class SubscriptionDTO {
         if(Objects.isNull(dto)) {
             throw new SubscriptionManagementException("subscription.absent");
         }
-        if(dto.getDeviceSource() == DeviceSource.BYOD && Objects.isNull(dto.getDeviceId())) {
+        if(dto.getDeviceSource() == DeviceSource.OWN && Objects.isNull(dto.getDeviceId())) {
             throw new SubscriptionManagementException(("subscription.device-source.ambiguous"));
         }
         if(dto.getDeviceSource() == DeviceSource.LEASE && Objects.nonNull(dto.getDeviceId())) {

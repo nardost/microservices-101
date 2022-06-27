@@ -1,5 +1,6 @@
 package info.akaki.usage.dto;
 
+import info.akaki.usage.entity.Device;
 import info.akaki.usage.entity.DeviceSource;
 import info.akaki.usage.entity.ServiceStatus;
 import info.akaki.usage.entity.ServiceType;
@@ -20,45 +21,46 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(of = { "subscriptionId" })
 public class SubscriptionDTO {
-    @NotNull(message = "{subscription.id.absent}")
     private UUID subscriptionId;
-    @NotNull(message = "{subscription.device.absent}")
-    private DeviceDTO device;
+    private UUID deviceId;
+    @NotNull(message = "{subscription.device-source.absent}")
+    private DeviceSource deviceSource;
     @NotNull(message = "{subscription.service-type.absent}")
     private ServiceType serviceType;
     private LocalDateTime subscriptionTimestamp;
-    private ServiceStatus serviceStatus;
+    private ServiceStatus subscriptionStatus;
 
     public SubscriptionDTO(Subscription subscription) {
         this.subscriptionId = subscription.getSubscriptionId();
-        this.serviceStatus = subscription.getServiceStatus();
+        this.subscriptionStatus = subscription.getServiceStatus();
         this.serviceType = subscription.getServiceType();
         this.subscriptionTimestamp = subscription.getSubscriptionTimestamp();
-        this.device = new DeviceDTO(subscription.getDevice());
+        this.deviceId = subscription.getDevice().getDeviceId();
+        this.deviceSource = subscription.getDevice().getDeviceSource();
+    }
+
+    public Subscription toSubscription() {
+        Subscription s = new Subscription();
+        s.setSubscriptionId(this.subscriptionId);
+        s.setServiceStatus(this.subscriptionStatus);
+        s.setServiceType(this.serviceType);
+        s.setSubscriptionTimestamp(this.subscriptionTimestamp);
+        Device d = new Device();
+        d.setDeviceId(this.deviceId);
+        d.setDeviceSource(this.deviceSource);
+        s.setDevice(d);
+        return s;
     }
 
     public static void validate(SubscriptionDTO dto) {
         if(Objects.isNull(dto)) {
             throw new ServiceDeliveryException("subscription.absent");
         }
-        if(Objects.isNull(dto.getSubscriptionId())) {
-            throw new ServiceDeliveryException("subscription.id.absent");
-        }
-        if(Objects.isNull(dto.getDevice())) {
-            throw new ServiceDeliveryException("subscription.device.absent");
+        if(Objects.isNull(dto.getDeviceSource())) {
+            throw new ServiceDeliveryException("subscription.device-source.absent");
         }
         if(Objects.isNull(dto.getServiceType())) {
             throw new ServiceDeliveryException("subscription.subscription-type.absent");
         }
-    }
-
-    public Subscription toSubscription() {
-        Subscription s = new Subscription();
-        s.setSubscriptionId(this.subscriptionId);
-        s.setServiceStatus(this.serviceStatus);
-        s.setServiceType(this.serviceType);
-        s.setSubscriptionTimestamp(this.subscriptionTimestamp);
-        s.setDevice(this.device.toDevice());
-        return s;
     }
 }

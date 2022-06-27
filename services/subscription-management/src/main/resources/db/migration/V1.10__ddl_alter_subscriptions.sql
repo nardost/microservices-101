@@ -1,0 +1,1 @@
+alter table subscriptions alter column subscription_timestamp set data type timestamp;

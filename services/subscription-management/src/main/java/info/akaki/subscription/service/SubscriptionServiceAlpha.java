@@ -11,6 +11,7 @@ import info.akaki.subscription.repository.SubscriptionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
@@ -79,19 +80,22 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     }
 
     /**
-     * TODO:
-     *  - send subscription request to service-delivery microservice
-     *  - should return device info if subscriber is leasing device.
+     * Send a request to service-delivery microservice
+     * @param dto the subscription request object
+     * @return a subscription object filled with subscription id & device metadata
      */
-    private SubscriptionDTO requestSubscription(SubscriptionDTO subscriptionDTO) {
-        log.info("Subscription request sent to service-delivery microservice");
-        SubscriptionDTO response = this.restTemplate.postForObject(
-                SERVICE_DELIVERY_MICROSERVICE_HOST_URL + "/api/v1/subscriptions",
-                subscriptionDTO,
-                SubscriptionDTO.class
-        );
-        log.info("{}", response);
-        return response;
+    private SubscriptionDTO requestSubscription(SubscriptionDTO dto) {
+        try {
+            return this.restTemplate.postForObject(
+                    SERVICE_DELIVERY_MICROSERVICE_HOST_URL + "/api/v1/subscriptions",
+                    dto,
+                    SubscriptionDTO.class
+            );
+        } catch (RestClientException rce) {
+            // todo: add some resilience here...
+            log.info("{}", rce.getLocalizedMessage());
+            throw new SubscriptionManagementException("service.remote-service-failed");
+        }
     }
 
     /**

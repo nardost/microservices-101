@@ -4,6 +4,7 @@ import info.akaki.usage.entity.DeviceSource;
 import info.akaki.usage.entity.ServiceStatus;
 import info.akaki.usage.entity.ServiceType;
 import info.akaki.usage.entity.Subscription;
+import info.akaki.usage.exception.ServiceDeliveryException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -18,11 +20,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(of = { "subscriptionId" })
 public class SubscriptionDTO {
-    @NotNull(message = "{subscription-id.absent}")
+    @NotNull(message = "{subscription.id.absent}")
     private UUID subscriptionId;
-    @NotNull(message = "{device-info.absent}")
+    @NotNull(message = "{subscription.device.absent}")
     private DeviceDTO device;
-    @NotNull(message = "{service-type.absent}")
+    @NotNull(message = "{subscription.service-type.absent}")
     private ServiceType serviceType;
     private LocalDateTime subscriptionTimestamp;
     private ServiceStatus serviceStatus;
@@ -33,6 +35,21 @@ public class SubscriptionDTO {
         this.serviceType = subscription.getServiceType();
         this.subscriptionTimestamp = subscription.getSubscriptionTimestamp();
         this.device = new DeviceDTO(subscription.getDevice());
+    }
+
+    public static void validate(SubscriptionDTO dto) {
+        if(Objects.isNull(dto)) {
+            throw new ServiceDeliveryException("subscription.absent");
+        }
+        if(Objects.isNull(dto.getSubscriptionId())) {
+            throw new ServiceDeliveryException("subscription.id.absent");
+        }
+        if(Objects.isNull(dto.getDevice())) {
+            throw new ServiceDeliveryException("subscription.device.absent");
+        }
+        if(Objects.isNull(dto.getServiceType())) {
+            throw new ServiceDeliveryException("subscription.subscription-type.absent");
+        }
     }
 
     public Subscription toSubscription() {

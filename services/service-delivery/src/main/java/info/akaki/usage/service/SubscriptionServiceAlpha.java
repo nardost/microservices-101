@@ -6,6 +6,7 @@ import info.akaki.usage.entity.DeviceSource;
 import info.akaki.usage.entity.DeviceState;
 import info.akaki.usage.entity.ServiceStatus;
 import info.akaki.usage.entity.ServiceType;
+import info.akaki.usage.exception.ServiceDeliveryException;
 import info.akaki.usage.repository.SubscriptionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,18 +35,26 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     }
 
     @Override
-    public SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO) {
-        if(subscriptionDTO.getDevice().getDeviceSource() == DeviceSource.OWN) {
+    public SubscriptionDTO createSubscription(SubscriptionDTO dto) {
+        SubscriptionDTO.validate(dto);
+        if(this.subscriptionRepository.existsById(dto.getSubscriptionId())) {
+            throw new ServiceDeliveryException("service.subscription-exists");
+        }
+        if(dto.getDevice().getDeviceSource() == DeviceSource.OWN) {
             // if device is BYOD, create a new Device object (simulate querying manufacturer db to get metadata)
-            subscriptionDTO.setDevice(queryManufacturerDB(subscriptionDTO.getDevice().getDeviceId()));
+            final DeviceDTO ownDevice = queryManufacturerDB(dto.getDevice().getDeviceId());
+            ownDevice.setDeviceSource(DeviceSource.OWN);
+            dto.setDevice(ownDevice);
+
         } else {
             // if device is leased, get a device from db
-            subscriptionDTO.setDevice(this.deviceService.getDeviceForServiceType(subscriptionDTO.getServiceType()));
+            final DeviceDTO leasedDevice = this.deviceService.getDeviceForServiceType(dto.getServiceType());
+            dto.setDevice(leasedDevice);
         }
-        subscriptionDTO.getDevice().setDeviceState(DeviceState.ACTIVE);
-        subscriptionDTO.setServiceStatus(ServiceStatus.CREATED);
-        subscriptionDTO.setSubscriptionTimestamp(LocalDateTime.now());
-        return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(subscriptionDTO.toSubscription()));
+        dto.getDevice().setDeviceState(DeviceState.ACTIVE);
+        dto.setServiceStatus(ServiceStatus.CREATED);
+        dto.setSubscriptionTimestamp(LocalDateTime.now());
+        return new SubscriptionDTO(this.subscriptionRepository.saveAndFlush(dto.toSubscription()));
     }
 
     /**
@@ -58,7 +67,6 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         dto.setDeviceId(deviceId);
         dto.setEndOfLife(LocalDateTime.now().plusYears(5));
         dto.setServiceTypes(Arrays.stream(ServiceType.values()).collect(Collectors.toSet()));
-        dto.setDeviceSource(DeviceSource.OWN);
         return dto;
     }
 }

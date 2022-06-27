@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 public class DeviceDTO {
     private UUID deviceId;
     private DeviceState deviceState;
-    @NotNull(message = "{device-source.absent}")
+    @NotNull(message = "{device.device-source.absent}")
     private DeviceSource deviceSource;
     private LocalDateTime endOfLife;
     private Collection<ServiceType> serviceTypes;

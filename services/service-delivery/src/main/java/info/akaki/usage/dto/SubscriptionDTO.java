@@ -45,6 +45,13 @@ public class SubscriptionDTO {
         s.setServiceStatus(this.subscriptionStatus);
         s.setServiceType(this.serviceType);
         s.setSubscriptionTimestamp(this.subscriptionTimestamp);
+        /* If device already exists in DB (managed entity),
+         * Subscription::setDevice has to be invoked with
+         * the managed Device entity as parameter after the
+         * Subscription object is created with this method.
+         * Otherwise, an exception will be raised that says
+         * another entity with the same id exists in the session...
+         */
         Device d = new Device();
         d.setDeviceId(this.deviceId);
         d.setDeviceSource(this.deviceSource);

@@ -1,6 +1,5 @@
 package info.akaki.usage.service;
 
-import info.akaki.usage.dto.DeviceDTO;
 import info.akaki.usage.dto.SubscriptionDTO;
 import info.akaki.usage.entity.Device;
 import info.akaki.usage.entity.DeviceSource;
@@ -44,9 +43,14 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         SubscriptionDTO.validate(dto);
 
         final Subscription subscription = dto.toSubscription();
-        Device device = this.deviceRepository.findFirstByServiceTypesContainingAndDeviceStateEquals(dto.getServiceType(), DeviceState.IDLE);
+        // Assume device will be leased
+        Device device = this.deviceRepository
+                .findFirstByServiceTypesContainingAndDeviceStateEquals(
+                        dto.getServiceType(),
+                        DeviceState.IDLE
+                );
+        // if subscriber wants to own device, query device metadata in manufacturer db
         if(subscription.getDevice().getDeviceSource() == DeviceSource.OWN) {
-            // if device is BYOD, create a new Device object (simulate querying manufacturer db to get metadata)
             device = queryManufacturerDB(subscription.getDevice().getDeviceId())
                     .orElseThrow(() -> new ServiceDeliveryException("service.device-not-recognized"));
             device.setDeviceSource(DeviceSource.OWN);

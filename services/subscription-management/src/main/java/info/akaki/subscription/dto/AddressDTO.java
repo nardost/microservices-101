@@ -9,12 +9,10 @@ import lombok.Setter;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Objects;
 import java.util.UUID;
 
 import static info.akaki.subscription.utilities.Constants.MAX_LENGTH_CITY;
 import static info.akaki.subscription.utilities.Constants.MAX_LENGTH_STREET_ADDRESS;
-import static info.akaki.subscription.utilities.Constants.REGEX_UUID;
 import static info.akaki.subscription.utilities.Constants.REGEX_ZIP_CODE;
 
 @Getter
@@ -22,31 +20,30 @@ import static info.akaki.subscription.utilities.Constants.REGEX_ZIP_CODE;
 @NoArgsConstructor
 @EqualsAndHashCode(of = { "id" })
 public class AddressDTO {
-    @Pattern(regexp = REGEX_UUID, message = "validation.uuid.invalid")
-    private String id;
-    @Size(max = MAX_LENGTH_STREET_ADDRESS, message = "validation.street-address.length")
+    private UUID id;
+    @Size(max = MAX_LENGTH_STREET_ADDRESS, message = "address.street-address.too-long")
     private String street;
-    @Size(max = MAX_LENGTH_CITY, message = "validation.city.length")
+    @Size(max = MAX_LENGTH_CITY, message = "address.city.too-long")
     private String city;
-    @Pattern(regexp = REGEX_ZIP_CODE, message = "validation.zip-code.invalid")
+    @Pattern(regexp = REGEX_ZIP_CODE, message = "address.zip-code.invalid")
     private String zipCode;
-    private USState USState;
+    private USState state;
 
     public AddressDTO(Address address) {
-        this.id = address.getId().toString();
+        this.id = address.getId();
         this.street = address.getStreet();
         this.city = address.getCity();
         this.zipCode = address.getZipCode();
-        this.USState = address.getUSState();
+        this.state = address.getState();
     }
 
     public Address toAddress() {
         Address a = new Address();
-        a.setId(Objects.nonNull(this.id) ? UUID.fromString(this.id) : null);
+        a.setId(this.id);
         a.setStreet(this.street);
         a.setCity(this.city);
         a.setZipCode(this.zipCode);
-        a.setUSState(this.USState);
+        a.setState(this.state);
         return a;
     }
 }

@@ -1,7 +1,7 @@
 package info.akaki.subscription.dto;
 
 import info.akaki.subscription.entity.Plan;
-import info.akaki.subscription.exception.AkakiUtilityException;
+import info.akaki.subscription.exception.SubscriptionManagementException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,16 +24,16 @@ import static java.lang.Boolean.FALSE;
 @EqualsAndHashCode(of = { "id" })
 public class PlanDTO {
     private UUID id;
-    @NotNull(message = "{plan-name.absent}")
+    @NotNull(message = "{plan.plan-name.absent}")
     private String planName;
-    @NotNull(message = "{base-units.absent}")
-    @Positive(message = "{units.negative}")
+    @NotNull(message = "{plan.base-units.absent}")
+    @Positive(message = "{plan.units.negative}")
     private double baseUnits;
-    @NotNull(message = "{max-units.absent}")
-    @Positive(message = "{units.negative}")
+    @NotNull(message = "{plan.max-units.absent}")
+    @Positive(message = "{plan.units.negative}")
     private double maxUnits;
-    @NotNull(message = "{rate.absent}")
-    @Positive(message = "{rate.invalid}")
+    @NotNull(message = "{plan.rate.absent}")
+    @Positive(message = "{plan.rate.invalid}")
     private BigDecimal ratePerUnit;
 
     public PlanDTO(Plan plan) {
@@ -56,16 +56,16 @@ public class PlanDTO {
 
     public static void validate(PlanDTO dto) {
         if(Objects.isNull(dto)) {
-            throw new AkakiUtilityException("plan.absent");
+            throw new SubscriptionManagementException("plan.absent");
         }
         if(FALSE.equals(isValidBaseUnits(dto.getBaseUnits()))) {
-            throw new AkakiUtilityException("base-units.invalid");
+            throw new SubscriptionManagementException("plan.base-units.invalid");
         }
         if(FALSE.equals(isValidMaxUnits(dto.getMaxUnits()))) {
-            throw new AkakiUtilityException("max-units.invalid");
+            throw new SubscriptionManagementException("plan.max-units.invalid");
         }
         if(FALSE.equals(isValidRatePerUnit(dto.getRatePerUnit()))) {
-            throw new AkakiUtilityException("rate-per-unit.invalid");
+            throw new SubscriptionManagementException("plan.rate-per-unit.invalid");
         }
     }
 }

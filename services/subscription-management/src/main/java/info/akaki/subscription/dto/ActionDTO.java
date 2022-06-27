@@ -17,10 +17,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 public class ActionDTO {
-    @NotNull(message = "{subscription-id.absent}")
+    @NotNull(message = "{action.subscription-id.absent}")
     private UUID subscriptionId;
-    @NotNull(message = "{action.absent}")
-    private Action action;
-    @FutureOrPresent(message = "{execution-timestamp.past}")
+    @NotNull(message = "{action.command.absent}")
+    private Command command;
+    @FutureOrPresent(message = "{action.execution-timestamp.past}")
     private LocalDateTime executionTimestamp;
 }

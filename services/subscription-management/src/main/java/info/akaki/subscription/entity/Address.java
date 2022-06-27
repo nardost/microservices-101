@@ -29,5 +29,5 @@ public class Address {
     private String city;
     private String zipCode;
     @Enumerated(EnumType.STRING)
-    private USState USState;
+    private USState state;
 }

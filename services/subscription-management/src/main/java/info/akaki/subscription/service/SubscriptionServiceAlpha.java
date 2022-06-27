@@ -3,7 +3,7 @@ package info.akaki.subscription.service;
 import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
 import info.akaki.subscription.entity.SubscriptionStatus;
-import info.akaki.subscription.exception.AkakiUtilityException;
+import info.akaki.subscription.exception.SubscriptionManagementException;
 import info.akaki.subscription.repository.CustomerRepository;
 import info.akaki.subscription.repository.PlanRepository;
 import info.akaki.subscription.repository.SubscriptionRepository;
@@ -41,7 +41,7 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     public SubscriptionDTO getSubscriptionById(UUID subscriptionId) {
         return new SubscriptionDTO(this.subscriptionRepository
                 .findById(subscriptionId)
-                .orElseThrow(() -> new AkakiUtilityException("service.subscription.not-found")));
+                .orElseThrow(() -> new SubscriptionManagementException("service.subscription.not-found")));
     }
 
     @Override
@@ -56,10 +56,10 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     public SubscriptionDTO subscribe(SubscriptionDTO subscriptionDTO) {
         SubscriptionDTO.validate(subscriptionDTO);
         if(FALSE.equals(planExists(subscriptionDTO.getSubscriptionType()))) {
-            throw new AkakiUtilityException("plan.not-found");
+            throw new SubscriptionManagementException("plan.not-found");
         }
         if(FALSE.equals(subscriberExists(subscriptionDTO.getSubscriberId()))) {
-            throw new AkakiUtilityException("subscriber.not-found");
+            throw new SubscriptionManagementException("subscriber.not-found");
         }
         subscriptionDTO.setSubscriptionTimestamp(LocalDateTime.now());
         subscriptionDTO.setSubscriptionStatus(SubscriptionStatus.PENDING);

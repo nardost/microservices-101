@@ -3,7 +3,7 @@ package info.akaki.subscription.dto;
 import info.akaki.subscription.entity.DeviceSource;
 import info.akaki.subscription.entity.Subscription;
 import info.akaki.subscription.entity.SubscriptionStatus;
-import info.akaki.subscription.exception.AkakiUtilityException;
+import info.akaki.subscription.exception.SubscriptionManagementException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +20,12 @@ import java.util.UUID;
 @EqualsAndHashCode(of = "{ id }")
 public class SubscriptionDTO {
     private UUID id;
-    @NotNull(message = "{subscriber-id.absent}")
+    @NotNull(message = "{subscription.subscriber-id.absent}")
     private UUID subscriberId;
-    @NotNull(message = "{plan-id.absent}")
+    @NotNull(message = "{subscription.subscription-type.absent}")
     private String subscriptionType;
     private UUID deviceId;
-    @NotNull(message = "{device-source.absent}")
+    @NotNull(message = "{subscription.device-source.absent}")
     private DeviceSource deviceSource;
     private LocalDateTime subscriptionTimestamp;
     private SubscriptionStatus subscriptionStatus;
@@ -54,13 +54,13 @@ public class SubscriptionDTO {
 
     public static void validate(SubscriptionDTO dto) {
         if(Objects.isNull(dto)) {
-            throw new AkakiUtilityException("subscription.absent");
+            throw new SubscriptionManagementException("subscription.absent");
         }
         if(dto.getDeviceSource() == DeviceSource.BYOD && Objects.isNull(dto.getDeviceId())) {
-            throw new AkakiUtilityException(("device.source.ambiguous"));
+            throw new SubscriptionManagementException(("subscription.device-source.ambiguous"));
         }
         if(dto.getDeviceSource() == DeviceSource.LEASE && Objects.nonNull(dto.getDeviceId())) {
-            throw new AkakiUtilityException(("device.source.ambiguous"));
+            throw new SubscriptionManagementException(("subscription.device-source.ambiguous"));
         }
     }
 }

@@ -1,7 +1,7 @@
 package info.akaki.subscription.service;
 
 import info.akaki.subscription.dto.PlanDTO;
-import info.akaki.subscription.exception.AkakiUtilityException;
+import info.akaki.subscription.exception.SubscriptionManagementException;
 import info.akaki.subscription.repository.PlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class PlanServiceAlpha implements PlanService {
     public PlanDTO getPlanById(UUID planId) {
         return new PlanDTO(this.planRepository
                 .findById(planId)
-                .orElseThrow(() -> new AkakiUtilityException("service.plan.not-found")));
+                .orElseThrow(() -> new SubscriptionManagementException("service.plan.not-found")));
     }
 
     @Override

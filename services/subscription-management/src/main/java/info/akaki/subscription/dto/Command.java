@@ -1,6 +1,6 @@
 package info.akaki.subscription.dto;
 
-public enum Action {
+public enum Command {
     ACTIVATE,
     SUSPEND,
     RESUME,

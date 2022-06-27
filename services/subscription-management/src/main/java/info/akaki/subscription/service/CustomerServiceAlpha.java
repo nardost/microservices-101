@@ -1,7 +1,7 @@
 package info.akaki.subscription.service;
 
 import info.akaki.subscription.dto.CustomerDTO;
-import info.akaki.subscription.exception.AkakiCustomersServiceException;
+import info.akaki.subscription.exception.SubscriptionManagementException;
 import info.akaki.subscription.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class CustomerServiceAlpha implements CustomerService {
     public CustomerDTO getCustomerById(UUID customerId) {
         return new CustomerDTO(this.customerRepository
                 .findById(customerId)
-                .orElseThrow(() -> new AkakiCustomersServiceException("service.customer.not-found")));
+                .orElseThrow(() -> new SubscriptionManagementException("service.customer.not-found")));
     }
 
     @Override

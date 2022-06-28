@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,9 +22,7 @@ import java.util.UUID;
 public class SubscriptionDTO {
     private UUID subscriptionId;
     private UUID deviceId;
-    @NotNull(message = "{subscription.device-source.absent}")
     private DeviceSource deviceSource;
-    @NotNull(message = "{subscription.service-type.absent}")
     private ServiceType serviceType;
     private LocalDateTime subscriptionTimestamp;
     private ServiceStatus subscriptionStatus;
@@ -59,15 +56,21 @@ public class SubscriptionDTO {
         return s;
     }
 
-    public static void validate(SubscriptionDTO dto) {
+    public static void validateForCreationRequest(SubscriptionDTO dto) {
         if(Objects.isNull(dto)) {
             throw new ServiceDeliveryException("subscription.absent");
         }
-        if(Objects.isNull(dto.getDeviceSource())) {
-            throw new ServiceDeliveryException("subscription.device-source.absent");
-        }
         if(Objects.isNull(dto.getServiceType())) {
-            throw new ServiceDeliveryException("subscription.subscription-type.absent");
+            throw new ServiceDeliveryException("subscription.service-type.absent");
+        }
+    }
+
+    public static void validateForUpdateRequest(SubscriptionDTO dto) {
+        if(Objects.isNull(dto)) {
+            throw new ServiceDeliveryException("subscription.absent");
+        }
+        if(Objects.isNull(dto.getSubscriptionId())) {
+            throw new ServiceDeliveryException("subscription.id.absent");
         }
     }
 }

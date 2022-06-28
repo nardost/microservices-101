@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   application:
-    name: Customers Microservice
+    name: subscription-management
   datasource:
     url: jdbc:postgresql://${MS_101_SUBSCRIPTION_DB_HOST:localhost}:${MS_101_SUBSCRIPTION_DB_PORT:5432}/${MS_101_SUBSCRIPTION_DB_NAME:postgres}
     username: ${MS_101_SUBSCRIPTION_DB_USER}
@@ -12,3 +12,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    healthcheck:
+      enabled: true

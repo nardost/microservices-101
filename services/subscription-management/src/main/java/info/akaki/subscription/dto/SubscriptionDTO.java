@@ -24,10 +24,8 @@ public class SubscriptionDTO {
     private UUID subscriptionId;
     @NotNull(message = "{subscription.subscriber-id.absent}")
     private UUID subscriberId;
-    @NotNull(message = "{subscription.subscription-type.absent}")
     private String serviceType;
     private UUID deviceId;
-    @NotNull(message = "{subscription.device-source.absent}")
     private DeviceSource deviceSource;
     private LocalDateTime subscriptionTimestamp;
     private SubscriptionStatus subscriptionStatus;
@@ -54,15 +52,15 @@ public class SubscriptionDTO {
         return s;
     }
 
-    public static void validate(SubscriptionDTO dto) {
+    public static void validateForCreationRequest(SubscriptionDTO dto) {
         if(Objects.isNull(dto)) {
             throw new SubscriptionManagementException("subscription.absent");
         }
-        if(dto.getDeviceSource() == DeviceSource.OWN && Objects.isNull(dto.getDeviceId())) {
-            throw new SubscriptionManagementException(("subscription.device-source.ambiguous"));
+        if(Objects.isNull(dto.getSubscriberId())) {
+            throw new SubscriptionManagementException("subscription.subscriber-id.absent");
         }
-        if(dto.getDeviceSource() == DeviceSource.LEASE && Objects.nonNull(dto.getDeviceId())) {
-            throw new SubscriptionManagementException(("subscription.device-source.ambiguous"));
+        if(DeviceSource.OWN.equals(dto.getDeviceSource()) && Objects.isNull(dto.getDeviceId())) {
+            throw new SubscriptionManagementException(("subscription.device-id.absent"));
         }
     }
 }

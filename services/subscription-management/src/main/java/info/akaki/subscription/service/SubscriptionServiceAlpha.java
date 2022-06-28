@@ -3,7 +3,6 @@ package info.akaki.subscription.service;
 import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
 import info.akaki.subscription.entity.Subscription;
-import info.akaki.subscription.entity.SubscriptionStatus;
 import info.akaki.subscription.exception.SubscriptionManagementException;
 import info.akaki.subscription.repository.CustomerRepository;
 import info.akaki.subscription.repository.PlanRepository;
@@ -15,12 +14,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static info.akaki.subscription.utilities.Constants.SERVICE_DELIVERY_MICROSERVICE_HOST_URL;
 import static java.lang.Boolean.FALSE;
 
 @Service(value = "subscriptionServiceAlpha")
@@ -61,7 +58,7 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
 
     @Override
     public SubscriptionDTO subscribe(SubscriptionDTO dto) {
-        SubscriptionDTO.validate(dto);
+        SubscriptionDTO.validateForCreationRequest(dto);
         if(FALSE.equals(planExists(dto.getServiceType()))) {
             throw new SubscriptionManagementException("plan.not-found");
         }
@@ -87,7 +84,7 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     private SubscriptionDTO requestSubscription(SubscriptionDTO dto) {
         try {
             return this.restTemplate.postForObject(
-                    SERVICE_DELIVERY_MICROSERVICE_HOST_URL + "/api/v1/subscriptions",
+                    "http://service-delivery/api/v1/subscriptions",
                     dto,
                     SubscriptionDTO.class
             );

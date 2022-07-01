@@ -88,13 +88,13 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
          *      - LEASE to OWN
          *      - LEASE to LEASE
          *  (3) change service plan
-         *   (4) ?
+         *  (4) ?
          */
 
         // Get a rollback clone in case something fails.
-        final Subscription copy = new Subscription();
-        copy.setServiceType(subscription.getServiceType());
-        copy.setDevice(subscription.getDevice());
+        final Subscription cleanCopy = new Subscription();
+        cleanCopy.setServiceType(subscription.getServiceType());
+        cleanCopy.setDevice(subscription.getDevice());
 
         // (1) activate / suspend / resume / terminate
         if(subscription.getServiceStatus() != dto.getSubscriptionStatus()) {
@@ -106,9 +106,7 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         // (2) replace device
         if(Objects.nonNull(dto.getDeviceSource())) {
             if(!doDeviceReplacement(subscription, dto)) {
-                // rollback x 1
-                subscription.setServiceStatus(copy.getServiceStatus());
-                log.error("Service status change for subscription {} rolled back", subscription.getSubscriptionId());
+                rollback(subscription, cleanCopy);
                 throw new ServiceDeliveryException("service.device-replacement-error");
             }
         }
@@ -116,11 +114,7 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         // (3) change service plan
         if(subscription.getServiceType() != dto.getServiceType()) {
             if(!doServiceTypeChange(subscription, dto)) {
-                // rollback x 2
-                subscription.setServiceStatus(copy.getServiceStatus());
-                log.error("Service status change for subscription {} rolled back", subscription.getSubscriptionId());
-                subscription.setDevice(copy.getDevice());
-                log.error("Device change for subscription {} rolled back", subscription.getSubscriptionId());
+                rollback(subscription, cleanCopy);
                 throw new ServiceDeliveryException("service.service-plan-change-error");
             }
         }
@@ -137,21 +131,21 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
 
     private boolean doSubscriptionStateTransition(Subscription subscription, SubscriptionDTO dto) {
         final ServiceStatus currentState = subscription.getServiceStatus();
-        final ServiceStatus desiredNextState = dto.getSubscriptionStatus();
+        final ServiceStatus nextState = dto.getSubscriptionStatus();
 
         if(TERMINATED.equals(currentState)) {
-            log.info("Status of a terminated subscription cannot be changed.");
+            log.error("Status of a terminated subscription cannot be changed.");
             return false;
         }
 
-        if(TERMINATED.equals(desiredNextState)) {
+        if(TERMINATED.equals(nextState)) {
             subscription.setServiceStatus(TERMINATED);
             log.info("Subscription {} terminated", subscription.getSubscriptionId());
             return true;
         }
 
         if(CREATED.equals(currentState)) {
-            if(ACTIVATED.equals(desiredNextState)) {
+            if(ACTIVATED.equals(nextState)) {
                 subscription.setServiceStatus(ACTIVATED);
                 log.info("Subscription {} activated", subscription.getSubscriptionId());
                 return true;
@@ -159,7 +153,7 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         }
 
         if(ACTIVATED.equals(currentState)) {
-            if(SUSPENDED.equals(desiredNextState)) {
+            if(SUSPENDED.equals(nextState)) {
                 subscription.setServiceStatus(SUSPENDED);
                 log.info("Subscription {} suspended", subscription.getSubscriptionId());
                 return true;
@@ -167,13 +161,33 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         }
 
         if(SUSPENDED.equals(currentState)) {
-            if(ACTIVATED.equals(desiredNextState)) {
+            if(ACTIVATED.equals(nextState)) {
                 subscription.setServiceStatus(ACTIVATED);
                 log.info("Subscription {} resumed", subscription.getSubscriptionId());
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Rollback a subscription object to a clean state
+     * @param dirty the Subscription object to be rolled back
+     * @param clean the clean state
+     */
+    private void rollback(Subscription dirty, Subscription clean) {
+        if(dirty.getServiceType() != clean.getServiceType()) {
+            dirty.setServiceType(clean.getServiceType());
+            log.error("Service type for subscription {} rolled back", dirty.getSubscriptionId());
+        }
+        if(dirty.getServiceStatus() != clean.getServiceStatus()) {
+            dirty.setServiceStatus(clean.getServiceStatus());
+            log.error("Service status for subscription {} rolled back", dirty.getSubscriptionId());
+        }
+        if(!dirty.getDevice().equals(clean.getDevice())) {
+            dirty.setDevice(clean.getDevice());
+            log.error("Device for subscription {} rolled back", dirty.getSubscriptionId());
+        }
     }
 
     /**

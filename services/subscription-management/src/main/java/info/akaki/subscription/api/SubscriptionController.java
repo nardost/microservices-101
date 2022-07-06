@@ -1,13 +1,12 @@
 package info.akaki.subscription.api;
 
-import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
-import info.akaki.subscription.entity.SubscriptionStatus;
 import info.akaki.subscription.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,9 +47,16 @@ public class SubscriptionController {
         return new ResponseEntity<>(this.subscriptionService.subscribe(subscriptionDTO), HttpStatus.CREATED);
     }
 
-    @PostMapping("change-service-status")
-    public ResponseEntity<Void> changeServiceStatus(@Valid @RequestBody ActionDTO actionDTO) {
-        this.subscriptionService.changeSubscriptionStatus(actionDTO);
+    @PatchMapping("{subscriptionId}")
+    public ResponseEntity<Void> changeServiceStatus(
+            @NotNull(message = "{subscription.id.absent}")
+            @PathVariable("subscriptionId")
+            UUID subscriptionId,
+
+            @Valid
+            @RequestBody SubscriptionDTO dto) {
+        dto.setSubscriptionId(subscriptionId);
+        this.subscriptionService.changeSubscriptionStatus(dto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

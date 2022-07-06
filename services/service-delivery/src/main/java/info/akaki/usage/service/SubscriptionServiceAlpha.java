@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static info.akaki.usage.entity.ServiceStatus.*;
+import static info.akaki.usage.service.StateTransitionCommand.*;
 
 @Service("subscriptionService")
 @Transactional
@@ -97,8 +98,11 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         cleanCopy.setDevice(subscription.getDevice());
 
         // (1) activate / suspend / resume / terminate
-        if(subscription.getServiceStatus() != dto.getSubscriptionStatus()) {
-            if(!doSubscriptionStateTransition(subscription, dto)) {
+        final ServiceStatus currentState = subscription.getServiceStatus();
+        final ServiceStatus nextState = dto.getSubscriptionStatus();
+        if(Objects.nonNull(nextState) && currentState != nextState) {
+            final boolean successful = doSubscriptionStateTransition(subscription, nextState);
+            if (!successful) {
                 throw new ServiceDeliveryException("service.illegal-service-state-transition");
             }
         }
@@ -129,39 +133,49 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
         return false;
     }
 
-    private boolean doSubscriptionStateTransition(Subscription subscription, SubscriptionDTO dto) {
-        final ServiceStatus currentState = subscription.getServiceStatus();
-        final ServiceStatus nextState = dto.getSubscriptionStatus();
+    private StateTransitionCommand getStateTransitionCommand(ServiceStatus nextState) {
+        switch(nextState) {
+            case ACTIVATED: return ACTIVATE;
+            case SUSPENDED: return SUSPEND;
+            case TERMINATED: return TERMINATE;
+            default: throw new ServiceDeliveryException("service.invalid-subscription-state-transition");
+        }
+    }
 
-        if(TERMINATED.equals(currentState)) {
+    private boolean doSubscriptionStateTransition(Subscription subscription, ServiceStatus nextState) {
+
+        final ServiceStatus currentState = subscription.getServiceStatus();
+        final StateTransitionCommand command = getStateTransitionCommand(nextState);
+
+        if(currentState == TERMINATED) {
             log.error("Status of a terminated subscription cannot be changed.");
             return false;
         }
 
-        if(TERMINATED.equals(nextState)) {
+        if(command == TERMINATE) {
             subscription.setServiceStatus(TERMINATED);
             log.info("Subscription {} terminated", subscription.getSubscriptionId());
             return true;
         }
 
-        if(CREATED.equals(currentState)) {
-            if(ACTIVATED.equals(nextState)) {
+        if(currentState == CREATED) {
+            if(command == ACTIVATE) {
                 subscription.setServiceStatus(ACTIVATED);
                 log.info("Subscription {} activated", subscription.getSubscriptionId());
                 return true;
             }
         }
 
-        if(ACTIVATED.equals(currentState)) {
-            if(SUSPENDED.equals(nextState)) {
+        if(currentState == ACTIVATED) {
+            if(command == SUSPEND) {
                 subscription.setServiceStatus(SUSPENDED);
                 log.info("Subscription {} suspended", subscription.getSubscriptionId());
                 return true;
             }
         }
 
-        if(SUSPENDED.equals(currentState)) {
-            if(ACTIVATED.equals(nextState)) {
+        if(currentState == SUSPENDED) {
+            if(command == ACTIVATE) {
                 subscription.setServiceStatus(ACTIVATED);
                 log.info("Subscription {} resumed", subscription.getSubscriptionId());
                 return true;

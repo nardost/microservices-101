@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -22,7 +21,6 @@ import java.util.UUID;
 @ToString
 public class SubscriptionDTO {
     private UUID subscriptionId;
-    @NotNull(message = "{subscription.subscriber-id.absent}")
     private UUID subscriberId;
     private String serviceType;
     private UUID deviceId;

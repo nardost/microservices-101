@@ -17,7 +17,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 public class ActionDTO {
-    @NotNull(message = "{action.subscription-id.absent}")
     private UUID subscriptionId;
     @NotNull(message = "{action.command.absent}")
     private Command command;

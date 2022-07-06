@@ -1,6 +1,5 @@
 package info.akaki.subscription.service;
 
-import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
 
 import java.util.Collection;
@@ -10,5 +9,5 @@ public interface SubscriptionService {
     SubscriptionDTO getSubscriptionById(UUID subscriptionId);
     Collection<SubscriptionDTO> getAllSubscriptions();
     SubscriptionDTO subscribe(SubscriptionDTO subscriptionDTO);
-    void changeSubscriptionStatus(ActionDTO actionDTO);
+    void changeSubscriptionStatus(SubscriptionDTO subscriptionDTO);
 }

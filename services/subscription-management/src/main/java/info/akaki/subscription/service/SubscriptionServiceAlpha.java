@@ -1,6 +1,5 @@
 package info.akaki.subscription.service;
 
-import info.akaki.subscription.dto.ActionDTO;
 import info.akaki.subscription.dto.SubscriptionDTO;
 import info.akaki.subscription.entity.Subscription;
 import info.akaki.subscription.exception.SubscriptionManagementException;
@@ -71,9 +70,9 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
     }
 
     @Override
-    public void changeSubscriptionStatus(ActionDTO actionDTO) {
-        requestServiceStatusChange(actionDTO);
-        log.info("{}", actionDTO);
+    public void changeSubscriptionStatus(SubscriptionDTO subscriptionDTO) {
+        requestServiceStatusChange(subscriptionDTO);
+        log.info("{}", subscriptionDTO);
     }
 
     /**
@@ -99,10 +98,11 @@ public class SubscriptionServiceAlpha implements SubscriptionService {
      * TODO:
      *  - send activation request to service-delivery microservice
      *
-     * @param actionDTO subscription id
+     * @param dto subscription DTO
      */
-    private void requestServiceStatusChange(ActionDTO actionDTO) {
-        log.info("Service activation will be requested for subscription id");
+    private void requestServiceStatusChange(SubscriptionDTO dto) {
+        log.info(dto.toString());
+        throw new SubscriptionManagementException("service.method-not-implemented");
     }
 
     /**

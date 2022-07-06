@@ -2,7 +2,7 @@ package info.akaki.subscription.entity;
 
 public enum SubscriptionStatus {
     CREATED,
-    RUNNING,
+    ACTIVATED,
     SUSPENDED,
     TERMINATED
 }
